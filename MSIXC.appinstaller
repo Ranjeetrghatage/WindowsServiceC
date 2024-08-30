@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller
+	Uri="file:///C:/Users/LENOVO/source/repos/WindowsServiceC/MSIXC.appinstaller"
+	Version="1.0.51.0" xmlns="http://schemas.microsoft.com/appx/appinstaller/2021">
+	<MainBundle
+		Name="441cc865-3d1c-43d8-8c60-eb108ed58c1a"
+		Version="1.0.51.0"
+		Publisher="CN=LENOVO"
+		Uri="file:///C:/Users/LENOVO/source/repos/WindowsServiceC/MSIXC_1.0.51.0_Test/MSIXC_1.0.51.0_x86.msixbundle" />
+	<UpdateSettings>
+		<OnLaunch
+			HoursBetweenUpdateChecks="0"
+			UpdateBlocksActivation="true"
+			ShowPrompt="true" />
+		<AutomaticBackgroundTask />
+		<ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
+	</UpdateSettings>
+</AppInstaller>
