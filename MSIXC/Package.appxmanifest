@@ -11,7 +11,7 @@
 	<Identity
 	  Name="441cc865-3d1c-43d8-8c60-eb108ed58c1a"
 	  Publisher="CN=LENOVO"
-	  Version="1.0.51.0" />
+	  Version="1.0.57.0" />
 
 	<Properties>
 		<DisplayName>MSIXC</DisplayName>

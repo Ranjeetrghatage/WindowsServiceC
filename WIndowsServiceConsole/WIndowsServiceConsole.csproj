@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{26CE0A5C-88BD-49DE-9E4F-16997228E6AB}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>WIndowsServiceConsole</RootNamespace>
     <AssemblyName>WIndowsServiceConsole</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>

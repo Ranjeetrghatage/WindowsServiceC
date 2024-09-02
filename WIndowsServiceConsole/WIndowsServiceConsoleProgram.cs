@@ -8,6 +8,8 @@ namespace WIndowsServiceConsole
 {
     public static class WIndowsServiceConsoleProgram 
     {
+
+
         static bool IsRunAsAdmin()
         {
             WindowsIdentity identity = WindowsIdentity.GetCurrent();
@@ -18,18 +20,7 @@ namespace WIndowsServiceConsole
         public static void Main(string[] args)
         {
 
-            if (args.Length > 0)
-            {
-                string action = args[0];
-                if (action == "install")
-                {
-                    Install();
-                }
-                else if (action == "uninstall")
-                {
-                    Uninstall();
-                }
-            }
+            Install();
 
         }
 

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration.Install;
 using System.IO;
@@ -15,18 +13,27 @@ namespace WindowsServiceC
         public ProjectInstaller()
         {
             InitializeComponent();
-         //   this.BeforeUninstall += new InstallEventHandler(ProjectInstaller_BeforeUninstall);
         }
 
-
-        private void ProjectInstaller_BeforeUninstall(object sender, InstallEventArgs e)
+        private void serviceInstaller1_BeforeInstall(object sender, InstallEventArgs e)
         {
-            LogFun("OnBefore Uninstall triggered.....");
+            string serviceName = serviceInstaller1.ServiceName;
+            LogFun("Service Name : " + serviceName);
+            LogFun("Before install triggered");
+            using (ServiceController sc = new ServiceController(serviceInstaller1.ServiceName))
+            {
+                // Check if the service exists
+                if (sc.Status != ServiceControllerStatus.Stopped)
+                {
+                    // Stop the service if it's running
+                    LogFun($"Stopping service '{serviceInstaller1.ServiceName}'...");
+                    sc.Stop();
+                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                    LogFun($"Service '{serviceInstaller1.ServiceName}' stopped successfully.");
+                }
+            }
+            LogFun("Before install over");
 
-
-            // Your custom code here
-            // For example, logging or cleanup tasks
-           // System.Diagnostics.EventLog.WriteEntry("MyService", "Service is about to be uninstalled.");
         }
 
         private void serviceInstaller1_AfterInstall(object sender, InstallEventArgs e)
@@ -54,7 +61,50 @@ namespace WindowsServiceC
 
         }
 
+        private void serviceInstaller1_AfterUninstall(object sender, InstallEventArgs e)
+        {
+            LogFun("After Uninstalling try to start...");
 
+            try
+            {
+                // Create an instance of the ServiceController to manage the service
+                using (ServiceController sc = new ServiceController(serviceInstaller1.ServiceName))
+                {
+                    // Check if the service exists
+                    if (sc.Status != ServiceControllerStatus.Stopped)
+                    {
+                        // Stop the service if it's running
+                        LogFun($"Stopping service '{serviceInstaller1.ServiceName}'...");
+                        sc.Stop();
+                        sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
+                        LogFun($"Service '{serviceInstaller1.ServiceName}' stopped successfully.");
+                    }
+                }
+
+                // Uninstall the service
+                using (var installer = new ServiceInstaller())
+                {
+                    installer.Context = new InstallContext();
+                    installer.ServiceName = serviceInstaller1.ServiceName;
+
+                    LogFun($"Uninstalling service '{serviceInstaller1.ServiceName}'...");
+                    installer.Uninstall(null);
+                    LogFun($"Service '{serviceInstaller1.ServiceName}' removed successfully.");
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Handle the case where the service is not found
+                LogFun($"Service '{serviceInstaller1.ServiceName}' is not installed or already removed.");
+            }
+            catch (Exception ex)
+            {
+                LogFun($"An error occurred while stopping or uninstalling the service: {ex.Message}");
+                throw;
+            }
+            LogFun("After Uninstalling try to end...");
+
+        }
 
 
         private void serviceInstaller1_BeforeUninstall(object sender, InstallEventArgs e)
@@ -122,50 +172,7 @@ namespace WindowsServiceC
 
         }
 
-        private void serviceInstaller1_AfterUninstall(object sender, InstallEventArgs e)
-        {
-            LogFun("After Uninstalling try to start...");
-
-            try
-            {
-                // Create an instance of the ServiceController to manage the service
-                using (ServiceController sc = new ServiceController(serviceInstaller1.ServiceName))
-                {
-                    // Check if the service exists
-                    if (sc.Status != ServiceControllerStatus.Stopped)
-                    {
-                        // Stop the service if it's running
-                        LogFun($"Stopping service '{serviceInstaller1.ServiceName}'...");
-                        sc.Stop();
-                        sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
-                        LogFun($"Service '{serviceInstaller1.ServiceName}' stopped successfully.");
-                    }
-                }
-
-                // Uninstall the service
-                using (var installer = new ServiceInstaller())
-                {
-                    installer.Context = new InstallContext();
-                    installer.ServiceName = serviceInstaller1.ServiceName;
-
-                    LogFun($"Uninstalling service '{serviceInstaller1.ServiceName}'...");
-                    installer.Uninstall(null);
-                    LogFun($"Service '{serviceInstaller1.ServiceName}' removed successfully.");
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                // Handle the case where the service is not found
-                LogFun($"Service '{serviceInstaller1.ServiceName}' is not installed or already removed.");
-            }
-            catch (Exception ex)
-            {
-                LogFun($"An error occurred while stopping or uninstalling the service: {ex.Message}");
-                throw;
-            }
-            LogFun("After Uninstalling try to end...");
-
-        }
+     
 
         private void serviceProcessInstaller1_AfterUninstall(object sender, InstallEventArgs e)
         {
@@ -178,7 +185,6 @@ namespace WindowsServiceC
                     // Stop the service if it's running
                     LogFun($"Stopping service '{serviceInstaller1.ServiceName}'...");
                     sc.Stop();
-                    //sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(10));
                     LogFun($"Service '{serviceInstaller1.ServiceName}' stopped successfully.");
                 }
             }
@@ -188,5 +194,7 @@ namespace WindowsServiceC
         {
             LogFun("From ProcessInstaller1 Before Uninstalling try to end...");
         }
+
+    
     }
 }
